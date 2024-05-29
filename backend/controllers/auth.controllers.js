@@ -5,12 +5,13 @@ import generateTokenAndSetCookie from "../utils/generateToken.js";
 export const signup = async (req, res) => {
   try {
     const { fullname, username, password, confirmPassword, gender } = req.body;
+
     if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
+      return res.status(400).json({ error: "Passwords do not match" });
     }
     const user = await User.findOne({ username });
     if (user) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ error: "User already exists" });
     }
 
     // hash password here
@@ -31,8 +32,9 @@ export const signup = async (req, res) => {
     if (newUser) {
       //generate JWT token here
 
-      await generateTokenAndSetCookie(newUser._id, res);
+      generateTokenAndSetCookie(newUser._id, res);
       await newUser.save();
+      
       res.status(201).json({
         _id: newUser._id,
         fullname: newUser.fullname,
@@ -52,11 +54,11 @@ export const login = async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ message: "User don't exist" });
+      return res.status(400).json({ error: "User don't exist" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ messsage: "Invalid username or password" });
+      return res.status(400).json({ error: "Invalid username or password" });
     }
     //generate JWT token here
     generateTokenAndSetCookie(user._id, res);
@@ -74,6 +76,7 @@ export const login = async (req, res) => {
   }
 };
 export const logout = (req, res) => {
+  // console.log("hii");
   try {
     res.cookie("jwt", "", {maxAge: 0});
     res.status(200).json({ message: "Logged out successfully" });

@@ -1,2 +1,5 @@
 tailwindcss 
 daisyUI 
+react-router-dom-->to use it rep App conponent in main.jsx with BrowserRouter component
+
+used zustand --- alternative to context 
