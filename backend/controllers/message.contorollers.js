@@ -1,6 +1,7 @@
 import conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
-
+import { getReceiverSocketId } from "../socket/socket.js";
+import { io } from '../socket/socket.js';
 
 export const sendMessage = async(req, res)=>{
     try {
@@ -27,7 +28,7 @@ export const sendMessage = async(req, res)=>{
             Conversation.messages.push(newMessage._id);
         }
 
-        //socket io functionality to make it real time 
+        
 
         //both this line will run sequntially to do it in parallel we are using promise
         // await Conversation.save();
@@ -35,6 +36,15 @@ export const sendMessage = async(req, res)=>{
         
         //it will run in parallel   
         await Promise.all([Conversation.save(), newMessage.save()]);
+         
+        //socket io functionality to make it real time 
+
+        const recieverSocketId = getReceiverSocketId(receiverId);
+        if(recieverSocketId){
+            //io.to(<socket_id>).emit() used to send the events to spedific client
+            io.to(recieverSocketId).emit("newMessage", newMessage);
+        }
+
 
         res.status(200).json(newMessage);
 

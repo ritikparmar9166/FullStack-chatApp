@@ -28,4 +28,4 @@ const useGetConversations = () => {
   return {loading, conversations};
 }
 
-export default useGetConversations
+export default useGetConversations;

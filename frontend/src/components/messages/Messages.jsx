@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import Message from './Message'
 import useGetMessages from '../../hooks/useGetMessages'
 import MessageSkeleton from '../skeletons/MessageSkeleton';
+import useListenMessages from '../../hooks/useListenMessages';
 
 
 const Messages = () => {
@@ -10,6 +11,10 @@ const Messages = () => {
   // console.log("messages: ", messages);
   // console.log(messages.length);
   const lastMessageRef = useRef();
+
+
+  //this will listen for any incoming messages from the socket
+  useListenMessages();
   
   //last message scroll hoke dikhe apne aap isliye
   useEffect(()=>{
